@@ -3,8 +3,13 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 export type ProductType = {
-  title: string
-  _id?: ObjectId
+  id: number;
+  title: string;
+  author: string;
+  canBeDownloaded: boolean;
+  minAgeRestrictions: number;
+  createdAt: Date;
+  publicationDate: Date;
 }
 
 // Connection URL
