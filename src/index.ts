@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import { productsRouter } from './routers/products-router'
 import { runDb } from './repositories/db'
+import {videosRouter} from "./routers/videos-router";
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.get('/', (_req: Request, res: Response) => {
 })
 
 app.use('/products', productsRouter)
+app.use('/videos', videosRouter)
 
 // ❗ НИКАКОГО app.listen на Vercel
 export default app
