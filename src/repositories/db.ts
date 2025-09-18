@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb'
+import { MongoClient } from 'mongodb'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -12,6 +12,17 @@ export type ProductType = {
   publicationDate: Date;
 }
 
+export type VideoType = {
+  id: number;
+  title: string;
+  author: string;
+  canBeDownloaded: boolean;
+  minAgeRestriction: string;
+  createdAt: Date;
+  publicationDate: Date;
+  availableResolutions: string[];
+}
+
 // Connection URL
 const url = process.env.MONGO_URL
 console.log('url :', url)
@@ -21,6 +32,7 @@ if (!url) {
 const client = new MongoClient(url);
 
 export const productCollection = client.db('homework1').collection<ProductType>('products');
+export const videosCollection = client.db('homework1').collection<VideoType>('videos');
 
 export const runDb = async () => {
   try {
