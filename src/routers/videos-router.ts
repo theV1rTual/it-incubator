@@ -88,7 +88,17 @@ videosRouter.post('/', async (req: Request, res: Response) => {
     }
 
     const result = await videosCollection.insertOne(doc);
-    return res.status(201).json(doc);
+    const returnResult: VideoType = {
+      id: doc.id,
+      title: doc.title,
+      author: doc.author,
+      availableResolutions: doc.availableResolutions,
+      publicationDate: doc.publicationDate,
+      createdAt: doc.createdAt,
+      minAgeRestriction: doc.minAgeRestriction,
+      canBeDownloaded: doc.canBeDownloaded
+    }
+    return res.status(201).json(returnResult);
   } catch (err) {
     res.sendStatus(500);
   }
