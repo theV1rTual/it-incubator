@@ -31,7 +31,7 @@ videosRouter.get('/:id', async (req: Request, res: Response) => {
       res.sendStatus(400)
     }
     const videos = await videosRepository.getVideos();
-    const selectedVideo = videos.filter((value: VideoType) => value.id.toString() == req.params.id )
+    const selectedVideo = videos.filter((value: VideoType) => value.id!.toString() == req.params.id )
     if (selectedVideo) {
       res.send(200).json(selectedVideo)
     }
@@ -43,7 +43,7 @@ videosRouter.get('/:id', async (req: Request, res: Response) => {
 
 videosRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const {title, author} = req.body;
+    const {title, author, availableResolutions} = req.body;
     const errors: {message: string, field: string}[] = [];
 
     if (!title || title.trim() === '') {
@@ -71,7 +71,7 @@ videosRouter.post('/', async (req: Request, res: Response) => {
       minAgeRestriction: 18,
       createdAt: now,
       publicationDate: new Date(now.getTime() + 24 * 60 * 60 * 1000),
-      availableResolutions: ['480']
+      availableResolutions
     }
 
     const result = await videosCollection.insertOne(doc);
@@ -96,7 +96,7 @@ videosRouter.delete('/:id', async (req: Request, res: Response) => {
   const id = req.params.id;
 
   const videos = await videosRepository.getVideos();
-  if (videos.find((value: VideoType) => value.id.toString() === id)) {
+  if (videos.find((value: VideoType) => value.id!.toString() === id)) {
     const result = await videosCollection.deleteOne({id: new Object(req.params.id)})
     res.sendStatus(204)
   } else {
