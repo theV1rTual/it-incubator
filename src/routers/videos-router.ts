@@ -90,7 +90,7 @@ videosRouter.post('/', async (req: Request, res: Response) => {
     const numericId = Date.now();
 
     const result = await videosCollection.insertOne(doc);
-    return  res.status(201).json({
+    return res.send(201).json({
       id: doc.id,
       title: doc.title,
       author: doc.author,
