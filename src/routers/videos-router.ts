@@ -1,4 +1,4 @@
-import {Router, Request, Response} from "express";
+import e, {Router, Request, Response} from "express";
 import {videosRepository} from "../repositories/videos-repository";
 import {videosCollection, VideoType} from "../repositories/db";
 import { ObjectId } from "mongodb";
@@ -68,6 +68,13 @@ videosRouter.post('/', async (req: Request, res: Response) => {
       errors.push(
           {message: 'title is required', field: 'title'}
       )
+    }
+
+    if (title.length >= 41) {
+      errors.push({
+        field: 'title',
+        message: 'title is too long'
+      })
     }
 
     if (!author) {
