@@ -24,8 +24,17 @@ export const videosRouter = Router({})
 
 videosRouter.get('/', async (req: Request, res: Response) => {
   const docs = await videosRepository.getVideos()
-  res.status(200).send(docs)
-  return res.status(200).json(docs);
+  const videos = docs.map((value) => ({
+    id: value.id,
+    title: value.title,
+    author: value.author,
+    canBeDownloaded: value.canBeDownloaded,
+    minAgeRestriction: value.minAgeRestriction,
+    createdAt: value.createdAt,
+    publicationDate: value.publicationDate,
+    availableResolutions: value.availableResolutions
+  }))
+  return res.status(200).json(videos);
 })
 
 videosRouter.get('/:id', async (req: Request, res: Response) => {
