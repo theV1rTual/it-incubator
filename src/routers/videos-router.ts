@@ -70,7 +70,7 @@ videosRouter.post('/', async (req: Request, res: Response) => {
       canBeDownloaded: false,
       minAgeRestriction: 18,
       createdAt: now,
-      publicationDate: now,
+      publicationDate: new Date(now.getTime() + 24 * 60 * 60 * 1000),
       availableResolutions: ['480']
     }
 
