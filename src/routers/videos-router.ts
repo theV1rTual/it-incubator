@@ -39,14 +39,20 @@ videosRouter.get('/', async (req: Request, res: Response) => {
 
 videosRouter.get('/:id', async (req: Request, res: Response) => {
   try {
-    if (!Number(req.params.id)) {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) {
       res.sendStatus(400)
     }
+
     const videos = await videosRepository.getVideos();
-    const selectedVideo = videos.filter((value: VideoType) => value.id!.toString() == req.params.id )
-    if (selectedVideo) {
-      res.send(200).json(selectedVideo)
+    const found = videos.find((value: VideoType) => value.id === id )
+    if (!found) {
+      return res.sendStatus(404);
     }
+
+    const { _id, ...view} = found as any;
+
+    return res.status(200).json(view);
   }
   catch (err) {
     res.sendStatus(500)
