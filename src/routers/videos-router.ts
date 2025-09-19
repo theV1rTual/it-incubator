@@ -64,17 +64,10 @@ videosRouter.post('/', async (req: Request, res: Response) => {
     const {title, author, availableResolutions} = req.body;
     const errors: {message: string, field: string}[] = [];
 
-    if (!title || title.trim() === '') {
+    if (!title || title.trim() === '' || title.length >= 41) {
       errors.push(
           {message: 'title is required', field: 'title'}
       )
-    }
-
-    if (title.length >= 41) {
-      errors.push({
-        field: 'title',
-        message: 'title is too long'
-      })
     }
 
     if (!author) {
