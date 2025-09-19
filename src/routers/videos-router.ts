@@ -10,7 +10,7 @@ export type VideoInput = {
 }
 
 type VideoViewModel = {
-  id: number; // = _id.toString()
+  _id: number; // = _id.toString()
   title: string;
   author: string;
   canBeDownloaded: boolean;
@@ -86,7 +86,7 @@ videosRouter.post('/', async (req: Request, res: Response) => {
     const result = await videosCollection.insertOne(doc);
 
     const view: VideoViewModel = {
-      id: numericId as unknown as number, // <-- число
+      _id: numericId as unknown as number, // <-- число
       title: doc.title,
       author: doc.author,
       canBeDownloaded: doc.canBeDownloaded,
