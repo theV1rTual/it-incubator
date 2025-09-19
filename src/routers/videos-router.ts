@@ -24,12 +24,8 @@ export const videosRouter = Router({})
 
 videosRouter.get('/', async (req: Request, res: Response) => {
   const docs = await videosRepository.getVideos()
-  const videos = docs.map(({_id, ...rest}: any) => ({
-    id: _id,
-    ...rest
-  }));
-  res.status(200).send(videos)
-  return res.status(200).json(videos);
+  res.status(200).send(docs)
+  return res.status(200).json(docs);
 })
 
 videosRouter.get('/:id', async (req: Request, res: Response) => {
@@ -72,6 +68,7 @@ videosRouter.post('/', async (req: Request, res: Response) => {
     const now = new Date();
 
     const doc: VideoType = {
+      id: +(new Date()),
       title,
       author,
       canBeDownloaded: false,
@@ -84,18 +81,6 @@ videosRouter.post('/', async (req: Request, res: Response) => {
     const numericId = Date.now();
 
     const result = await videosCollection.insertOne(doc);
-
-    const view: VideoViewModel = {
-      _id: numericId as unknown as number, // <-- число
-      title: doc.title,
-      author: doc.author,
-      canBeDownloaded: doc.canBeDownloaded,
-      minAgeRestriction: doc.minAgeRestriction,
-      createdAt: doc.createdAt,
-      publicationDate: doc.publicationDate,
-      availableResolutions: doc.availableResolutions
-    };
-
     return  res.status(201).json({
       id: doc.id,
       title: doc.title,
