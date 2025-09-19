@@ -88,7 +88,8 @@ videosRouter.post('/', async (req: Request, res: Response) => {
     }
 
     const result = await videosCollection.insertOne(doc);
-    return res.status(201).json(doc);
+    const { _id, ...view } = doc as any;
+    return res.status(201).json(view);
   } catch (err) {
     res.sendStatus(500);
   }
