@@ -1,6 +1,22 @@
 import {Router, Request, Response} from "express";
 import {videosRepository} from "../repositories/videos-repository";
 import {videosCollection, VideoType} from "../repositories/db";
+import { ObjectId } from "mongodb";
+
+export type VideoInput = {
+  title: string;
+  author: string;
+}
+
+type VideoViewModel = {
+  id: string; // = _id.toString()
+  title: string;
+  author: string;
+  canBeDownloaded: boolean;
+  minAgeRestriction: number | null;
+  createdAt: Date;
+  publicationDate: Date;
+};
 
 export const videosRouter = Router({})
 
@@ -46,6 +62,31 @@ videosRouter.post('/', async (req: Request, res: Response) => {
       return res.status(400).json({errorsMessages: errors})
     }
 
+    const now = new Date();
+
+    const doc: VideoType = {
+      title,
+      author,
+      canBeDownloaded: false,
+      minAgeRestriction: 18,
+      createdAt: now,
+      publicationDate: now,
+      availableResolutions: ['480']
+    }
+
+    const result = await videosCollection.insertOne(doc);
+
+    const view: VideoViewModel = {
+      id: result.insertedId.toString(),
+      title: doc.title,
+      author: doc.author,
+      canBeDownloaded: doc.canBeDownloaded,
+      minAgeRestriction: doc.minAgeRestriction,
+      createdAt: doc.createdAt,
+      publicationDate: doc.publicationDate,
+    };
+
+    return  res.status(201).json(view)
   } catch (err) {
     res.sendStatus(500);
   }

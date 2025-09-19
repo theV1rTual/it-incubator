@@ -13,11 +13,11 @@ export type ProductType = {
 }
 
 export type VideoType = {
-  id: number;
+  id?: number;
   title: string;
   author: string;
   canBeDownloaded: boolean;
-  minAgeRestriction: string;
+  minAgeRestriction: number;
   createdAt: Date;
   publicationDate: Date;
   availableResolutions: string[];
