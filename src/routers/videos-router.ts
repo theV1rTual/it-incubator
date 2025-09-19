@@ -6,16 +6,18 @@ import { ObjectId } from "mongodb";
 export type VideoInput = {
   title: string;
   author: string;
+  availableResolutions: string[];
 }
 
 type VideoViewModel = {
-  id: string; // = _id.toString()
+  id: number; // = _id.toString()
   title: string;
   author: string;
   canBeDownloaded: boolean;
   minAgeRestriction: number | null;
   createdAt: Date;
   publicationDate: Date;
+  availableResolutions: string[];
 };
 
 export const videosRouter = Router({})
@@ -68,22 +70,25 @@ videosRouter.post('/', async (req: Request, res: Response) => {
       title,
       author,
       canBeDownloaded: false,
-      minAgeRestriction: 18,
+      minAgeRestriction: null,
       createdAt: now,
-      publicationDate: new Date(now.getTime() + 24 * 60 * 60 * 1000),
+      publicationDate: new Date(new Date(now.getTime() + 24 * 60 * 60 * 1000)),
       availableResolutions
     }
+
+    const numericId = Date.now();
 
     const result = await videosCollection.insertOne(doc);
 
     const view: VideoViewModel = {
-      id: result.insertedId.toString(),
+      id: numericId as unknown as number, // <-- число
       title: doc.title,
       author: doc.author,
       canBeDownloaded: doc.canBeDownloaded,
       minAgeRestriction: doc.minAgeRestriction,
       createdAt: doc.createdAt,
       publicationDate: doc.publicationDate,
+      availableResolutions: doc.availableResolutions
     };
 
     return  res.status(201).json(view)

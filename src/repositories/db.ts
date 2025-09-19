@@ -17,7 +17,7 @@ export type VideoType = {
   title: string;
   author: string;
   canBeDownloaded: boolean;
-  minAgeRestriction: number;
+  minAgeRestriction: number | null;
   createdAt: Date;
   publicationDate: Date;
   availableResolutions: string[];
@@ -32,7 +32,7 @@ if (!url) {
 const client = new MongoClient(url);
 
 export const productCollection = client.db('homework1').collection<ProductType>('products');
-export const videosCollection = client.db('homework1').collection<VideoType>('videos');
+export const videosCollection = client.db('homework1').collection('videos');
 
 export const runDb = async () => {
   try {
