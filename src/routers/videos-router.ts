@@ -91,7 +91,16 @@ videosRouter.post('/', async (req: Request, res: Response) => {
       availableResolutions: doc.availableResolutions
     };
 
-    return  res.status(201).json(view)
+    return  res.status(201).json({
+      id: doc.id,
+      title: doc.title,
+      author: doc.author,
+      canBeDownloaded: doc.canBeDownloaded,
+      minAgeRestriction: doc.minAgeRestriction,
+      createdAt: doc.createdAt,
+      publicationDate: doc.publicationDate,
+      availableResolutions: doc.availableResolutions
+    })
   } catch (err) {
     res.sendStatus(500);
   }
