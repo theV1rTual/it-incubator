@@ -8,12 +8,4 @@ productsRouter.get('/', async ( req: Request, res: Response) => {
   res.send(products)
 })
 
-productsRouter.post('/', async (req: Request, res: Response) => {
-  const newProduct = await productsRepository.createProduct(req.body.title)
-  if (newProduct) {
-    res.status(201).send(newProduct)
-  } else {
-    res.sendStatus(404)
-  }
-})
 

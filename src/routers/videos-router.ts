@@ -10,21 +10,44 @@ videosRouter.get('/', async (req: Request, res: Response) => {
 })
 
 videosRouter.get('/:id', async (req: Request, res: Response) => {
-  const videos = await videosRepository.getVideos();
-  videos.filter((value: VideoType) => value.id.toString() == req.params.id )
+  try {
+    if (!Number(req.params.id)) {
+      res.sendStatus(400)
+    }
+    const videos = await videosRepository.getVideos();
+    const selectedVideo = videos.filter((value: VideoType) => value.id.toString() == req.params.id )
+    if (selectedVideo) {
+      res.send(200).json(selectedVideo)
+    }
+  }
+  catch (err) {
+    res.sendStatus(500)
+  }
 })
 
 videosRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const user = req.body;
+    const {title, author} = req.body;
+    const errors: {message: string, field: string}[] = [];
 
-    const result = await videosCollection.insertOne(user);
+    if (!title || title.trim() === '') {
+      errors.push(
+          {message: 'title is required', field: 'title'}
+      )
+    }
 
-    res.status(201).send(user);
+    if (!author) {
+      errors.push(
+          {message: 'author is required', field: 'author'}
+      )
+    }
 
-  }
-  catch (err) {
-    res.status(400);
+    if (errors.length > 0) {
+      return res.status(400).json({errorsMessages: errors})
+    }
+
+  } catch (err) {
+    res.sendStatus(500);
   }
 })
 
@@ -38,9 +61,16 @@ videosRouter.delete('/:id', async (req: Request, res: Response) => {
   } else {
     res.sendStatus(404)
   }
+})
 
+videosRouter.delete('/all-data', async (req: Request, res: Response) => {
+  try {
+    await videosCollection.deleteMany({})
 
-
+    res.sendStatus(204)
+  } catch (err) {
+    res.sendStatus(500)
+  }
 })
 
 
