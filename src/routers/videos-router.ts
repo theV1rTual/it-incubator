@@ -23,8 +23,13 @@ type VideoViewModel = {
 export const videosRouter = Router({})
 
 videosRouter.get('/', async (req: Request, res: Response) => {
-  const videos = await videosRepository.getVideos()
+  const docs = await videosRepository.getVideos()
+  const videos = docs.map(({_id, ...rest}: any) => ({
+    id: _id.toString(),
+    ...rest
+  }));
   res.status(200).send(videos)
+  return res.status(200).json(videos);
 })
 
 videosRouter.get('/:id', async (req: Request, res: Response) => {
