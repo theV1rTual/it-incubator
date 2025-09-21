@@ -20,6 +20,17 @@ type VideoViewModel = {
   availableResolutions: string[];
 };
 
+const AvailableResolutions = [
+  'P144',
+  'P240',
+  'P360',
+  'P480',
+  'P720',
+  'P1080',
+  'P1440',
+  'P2160'
+]
+
 export const videosRouter = Router({})
 
 videosRouter.get('/', async (req: Request, res: Response) => {
@@ -74,6 +85,14 @@ videosRouter.post('/', async (req: Request, res: Response) => {
       errors.push(
           {message: 'author is required', field: 'author'}
       )
+    }
+
+    for (let item of availableResolutions) {
+      if (!AvailableResolutions.includes(item)) {
+        errors.push(
+            {message: 'correct availableResolutions is required', field: 'availableResolutions'}
+        )
+      }
     }
 
     if (errors.length > 0) {
