@@ -70,6 +70,67 @@ videosRouter.get('/:id', async (req: Request, res: Response) => {
   }
 })
 
+videosRouter.put('/:id', async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    if (Number.isNaN(id)) {
+      res.sendStatus(400);
+    }
+
+    const {
+      title,
+      author,
+      availableResolution,
+      canBeDownloaded,
+      minAgeRestrictions,
+      publicationDate,
+    } = req.body ?? {}
+
+    const errors: {message: string, field: string}[] = [];
+
+    if (!title || title.length > 40) {
+      errors.push(
+          {message: 'title is required', field: 'title'}
+      )
+    }
+
+    if (!author || author.length > 20) {
+      errors.push(
+          {message: 'author is required', field: 'author'}
+      )
+    }
+
+    for (let item of availableResolution) {
+      if (!AvailableResolutions.includes(item)) {
+        errors.push(
+            {message: 'correct availableResolutions is required', field: 'availableResolutions'}
+        )
+      }
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({errorsMessages: errors})
+    }
+
+
+    const updatedDoc = {
+      title,
+      author,
+      availableResolution,
+      canBeDownloaded,
+      minAgeRestrictions,
+      publicationDate
+    };
+
+    const result = await videosCollection.updateOne({id}, {$set: updatedDoc})
+    if (!result.matchedCount) return res.sendStatus(404);
+    return res.sendStatus(204)
+  }
+  catch (err) {
+    res.sendStatus(500);
+  }
+})
+
 videosRouter.post('/', async (req: Request, res: Response) => {
   try {
     const {title, author, availableResolutions} = req.body;
