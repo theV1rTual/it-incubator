@@ -80,9 +80,9 @@ videosRouter.put('/:id', async (req: Request, res: Response) => {
     const {
       title,
       author,
-      availableResolution,
+      availableResolutions,
       canBeDownloaded,
-      minAgeRestrictions,
+      minAgeRestriction,
       publicationDate,
     } = req.body ?? {}
 
@@ -100,7 +100,7 @@ videosRouter.put('/:id', async (req: Request, res: Response) => {
       )
     }
 
-    for (let item of availableResolution) {
+    for (let item of availableResolutions) {
       if (!AvailableResolutions.includes(item)) {
         errors.push(
             {message: 'correct availableResolutions is required', field: 'availableResolutions'}
@@ -116,9 +116,9 @@ videosRouter.put('/:id', async (req: Request, res: Response) => {
     const updatedDoc = {
       title,
       author,
-      availableResolution,
+      availableResolutions,
       canBeDownloaded,
-      minAgeRestrictions,
+      minAgeRestriction,
       publicationDate
     };
 
