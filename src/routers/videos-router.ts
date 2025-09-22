@@ -123,7 +123,7 @@ videosRouter.put('/:id', async (req: Request, res: Response) => {
     };
 
     const result = await videosCollection.updateOne({id}, {$set: updatedDoc})
-    // if (!result.matchedCount) return res.sendStatus(404);
+    if (!result.matchedCount) return res.sendStatus(404);
     return res.sendStatus(204)
   }
   catch (err) {
