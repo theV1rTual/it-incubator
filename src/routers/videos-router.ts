@@ -108,6 +108,19 @@ videosRouter.put('/:id', async (req: Request, res: Response) => {
       }
     }
 
+    if (canBeDownloaded !== undefined && typeof canBeDownloaded !== 'boolean') {
+      errors.push({ message: 'canBeDownloaded must be boolean', field: 'canBeDownloaded' });
+    }
+    if (minAgeRestriction !== undefined &&
+        minAgeRestriction !== null &&
+        (!Number.isInteger(minAgeRestriction) || minAgeRestriction < 1 || minAgeRestriction > 18)) {
+      errors.push({ message: 'minAgeRestriction must be integer 1..18 or null', field: 'minAgeRestriction' });
+    }
+    if (publicationDate !== undefined && typeof publicationDate !== 'string') {
+      errors.push({ message: 'publicationDate must be ISO string', field: 'publicationDate' });
+    }
+
+
     if (errors.length > 0) {
       return res.status(400).json({errorsMessages: errors})
     }
@@ -182,15 +195,16 @@ videosRouter.post('/', async (req: Request, res: Response) => {
 })
 
 videosRouter.delete('/:id', async (req: Request, res: Response) => {
-  const id = req.params.id;
+  const id = Number(req.params.id);
 
-  const videos = await videosRepository.getVideos();
-  if (videos.find((value: VideoType) => value.id!.toString() === id)) {
-    const result = await videosCollection.deleteOne({id: new Object(req.params.id)})
-    res.sendStatus(204)
-  } else {
-    res.sendStatus(404)
+  if (Number.isNaN(id)) {
+    return res.sendStatus(400);
   }
+
+  const result = await videosCollection.deleteOne({id: id})
+  if (!result.deletedCount) return res.sendStatus(404);
+
+  return res.sendStatus(204)
 })
 
 videosRouter.delete('/all-data', async (req: Request, res: Response) => {
